@@ -23,6 +23,12 @@ opcion = "s"
 
 print("------ BIBLIOTECA UTN ------")
 while select != "8":
+    # Limpiar pantalla
+    if os.name == 'nt': 
+        _ = os.system('cls')
+    else: 
+        _ = os.system('clear')
+
     print("***** MENU *****")
     print("1. Ingresar títulos")
     print("2. Ingresar ejemplares")
@@ -44,24 +50,28 @@ while select != "8":
 
     match select:
         case "1":
-            # 2. Limpiamos la pantalla DENTRO de la opción elegida
-            #if os.name == 'nt': _ = os.system('cls')
-            #else: _ = os.system('clear')
+            # Limpiar pantalla
+            if os.name == 'nt': _ = os.system('cls')
+            else: _ = os.system('clear')
+
             print("OPCIÓN 1 - INGRESAR TÍTULOS")
+            
             while True:
                 nombre = input("Ingrese título: ")
                 titulos.append(nombre)
 
-                opcion = input("¿Desea agregar otro título? s / n: ")
-                if opcion.lower() != "n": 
-                    opcion = input("Error, ingrese 's' o 'n' para continuar: ")
+                while True: 
+                    opcion = input("¿Desea agregar otro título? (s/n): ")
+                    if opcion.lower() in ["s", "n"]:
+                        break
+                    else: 
+                        print("Error, ingrese solo 's' o 'n' para continuar:  ")
+                    
                 if opcion.lower() == "n":
-                    break
+                        break
 
-            #input("PRESIONE ENTER PARA VOLVER AL MENÚ")
-
-            #print("OPCIÓN 1 - INGRESAR TÍTULOS")
-            
+            print("\nSe terminaron de agregar títulos.")
+            input("PRESIONE ENTER PARA VOLVER AL MENÚ...")
 
         case "2":
             print("OPCIÓN 2 - INGRESAR EJEMPLARES")
