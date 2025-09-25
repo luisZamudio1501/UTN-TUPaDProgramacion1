@@ -21,15 +21,15 @@ ejemplares = []
 select = ""
 opcion = "s"
 
-print("------ BIBLIOTECA UTN ------")
 while select != "8":
     # Limpiar pantalla
     if os.name == 'nt': 
         _ = os.system('cls')
     else: 
         _ = os.system('clear')
-
-    print("***** MENU *****")
+    
+    print("----- BIBLIOTECA UTN -----")
+    print("    ***** MENU *****\n")
     print("1. Ingresar títulos")
     print("2. Ingresar ejemplares")
     print("3. Mostrar catálogo")
@@ -37,8 +37,8 @@ while select != "8":
     print("5. Listar agotados")
     print("6. Agregar título")
     print("7. Actualizar ejemplares (préstamo/devolución)")
-    print("8. Salir")
-    
+    print("8. Salir\n")
+
     # Ingreso de opción
     select = input("Ingrese que opción desea realizar: ")
     
@@ -57,11 +57,26 @@ while select != "8":
             print("OPCIÓN 1 - INGRESAR TÍTULOS")
             
             while True:
-                nombre = input("Ingrese título: ")
+                nombre = input("\nIngrese título: ").strip() # Se eliminan los espacios extra
+                # Verificaciones
+                if not nombre:
+                    print("Error, el campo no puede estar vacío")
+                    continue
+
+                titulos_existentes = []
+                for i in titulos:
+                    titulo_minuscula = i.lower() # Se pasa todo a minúscula para hacer la comparación
+                    titulos_existentes.append(titulo_minuscula)
+                
+                if nombre.lower() in titulos_existentes:
+                    print(f"Error: El título '{nombre}' ya existe, ingrese otro nombre")
+                    continue
+
                 titulos.append(nombre)
+                print(f"'{nombre}' fue agregado al catálogo de la Biblioteca Universitaria")
 
                 while True: 
-                    opcion = input("¿Desea agregar otro título? (s/n): ")
+                    opcion = input("\n¿Desea agregar otro título? (s/n): ")
                     if opcion.lower() in ["s", "n"]:
                         break
                     else: 
@@ -74,8 +89,40 @@ while select != "8":
             input("PRESIONE ENTER PARA VOLVER AL MENÚ...")
 
         case "2":
-            print("OPCIÓN 2 - INGRESAR EJEMPLARES")
-            
+            # Limpiar la pantalla nuevamente
+            if os.name == 'nt': _ = os.system('cls')
+            else: _ = os.system('clear')
+
+            print("--- OPCIÓN 2 - INGRESAR EJEMPLARES ---")
+
+            if not titulos: # Este if previene ingresar a este case si hoy hay títulos cargados previamente
+                print("\nDebe cargar títulos primero, seleccione la opción 1")
+            elif len(titulos) == len(ejemplares):
+                print("\nCada título ya tiene cargada su cantidad de ejemplares correspondiente")
+            else:
+                print("\nIngrese la cantidad de ejemplares en los siguientes títulos: \n")
+
+                indice = len(ejemplares)
+
+                for i in range(len(ejemplares), len(titulos)):
+                    titulo_aux = titulos[i]
+                    while True:
+                        cantidad_copias = input(f" * Cantidad de ejemplares para '{titulos[i]}': ")
+                        if cantidad_copias.isdigit():
+                            break
+                        else:
+                            print("Error: ingrese un número válido")
+                    
+                    ejemplares.append(int(cantidad_copias))
+                
+                print("\n--- RESUMEN ---\n")
+                
+                for i in range(indice, len(titulos)):
+                    titulo_agregado = titulos[i]
+                    copias_agregadas = ejemplares[i]
+                    print(f"Se agregaron {copias_agregadas} ejemplares al título '{titulo_agregado}'")
+
+            input("\nPRESIONE ENTER PARA VOLVER AL MENÚ...")
 
         case "3":
             print("OPCIÓN 3 - MOSTRAR CATÁLOGO")
