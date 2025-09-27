@@ -29,7 +29,7 @@ while select != "8":
         _ = os.system('clear')
     
     print("----- BIBLIOTECA UTN -----")
-    print("    ***** MENU *****\n")
+    print("     ***** MENU *****\n")
     print("1. Ingresar títulos")
     print("2. Ingresar ejemplares")
     print("3. Mostrar catálogo")
@@ -49,6 +49,7 @@ while select != "8":
     #print(f"Usted ha ingresado la oción {select}")
 
     match select:
+
         case "1":
             # Limpiar pantalla
             if os.name == 'nt': _ = os.system('cls')
@@ -57,13 +58,13 @@ while select != "8":
             print("OPCIÓN 1 - INGRESAR TÍTULOS")
             
             while True:
-                nombre = input("\nIngrese título: ").strip() # Se eliminan los espacios extra
+                nombre = input("\nINGRESE TÍTULO: ").strip() # Se eliminan los espacios extra
                 # Verificaciones
-                if not nombre:
+                if not nombre: # Se chequea que el no hay texto vacío
                     print("Error, el campo no puede estar vacío")
-                    continue
+                    continue # Vuelve al inicio del bucle
 
-                titulos_existentes = []
+                titulos_existentes = [] # Con esta lista se verificará que no haya títulos repetidos
                 for i in titulos:
                     titulo_minuscula = i.lower() # Se pasa todo a minúscula para hacer la comparación
                     titulos_existentes.append(titulo_minuscula)
@@ -71,21 +72,22 @@ while select != "8":
                 if nombre.lower() in titulos_existentes:
                     print(f"Error: El título '{nombre}' ya existe, ingrese otro nombre")
                     continue
-
+                
+                # Al finalizar las verificaciones se agrega el título a la lista
                 titulos.append(nombre)
-                print(f"'{nombre}' fue agregado al catálogo de la Biblioteca Universitaria")
+                print(f"\n'{nombre}' fue agregado al catálogo de la Biblioteca Universitaria")
 
                 while True: 
                     opcion = input("\n¿Desea agregar otro título? (s/n): ")
                     if opcion.lower() in ["s", "n"]:
-                        break
+                        break # Se termina el ciclo para volver al inicio del while
                     else: 
-                        print("Error, ingrese solo 's' o 'n' para continuar:  ")
+                        print("\nError, ingrese solo 's' o 'n' para continuar:  ")
                     
                 if opcion.lower() == "n":
                         break
 
-            print("\nSe terminaron de agregar títulos.")
+            print("\nSe terminaron de agregar títulos\n")
             input("PRESIONE ENTER PARA VOLVER AL MENÚ...")
 
         case "2":
@@ -100,22 +102,22 @@ while select != "8":
             elif len(titulos) == len(ejemplares):
                 print("\nCada título ya tiene cargada su cantidad de ejemplares correspondiente")
             else:
-                print("\nIngrese la cantidad de ejemplares en los siguientes títulos: \n")
+                print("\nIngrese la cantidad de ejemplares en los siguientes títulos: ")
 
                 indice = len(ejemplares)
 
                 for i in range(len(ejemplares), len(titulos)):
                     titulo_aux = titulos[i]
                     while True:
-                        cantidad_copias = input(f" * Cantidad de ejemplares para '{titulos[i]}': ")
+                        cantidad_copias = input(f"\nINGRESE CANTIDAD DE EJEMPLARES PARA '{titulos[i]}': ")
                         if cantidad_copias.isdigit():
                             break
                         else:
-                            print("Error: ingrese un número válido")
+                            print("\nError: ingrese un número válido\n")
                     
                     ejemplares.append(int(cantidad_copias))
                 
-                print("\n--- RESUMEN ---\n")
+                print("\n            --- RESUMEN ---\n")
                 
                 for i in range(indice, len(titulos)):
                     titulo_agregado = titulos[i]
@@ -126,6 +128,10 @@ while select != "8":
 
         case "3":
             print("OPCIÓN 3 - MOSTRAR CATÁLOGO")
+
+            for i in range(titulos):
+                nombre = titulos[i]
+                print(nombre)
             
 
         case "4":
@@ -145,11 +151,12 @@ while select != "8":
             
             
         case "8":
-            print("OPCIÓN 8 - Salir")
-    
+            if os.name == 'nt': _ = os.system('cls')
+            else: _ = os.system('clear')
             
-        case _:
-            input("Opción incorrecta: ingrese nuevamente: ")
+            print("FIN DE PROGRAMA\n")
+            
+        # El case _: o default: es redundante, ya que la condición del while de línea 46 impide cualquier ingreso distinto del rango
             
             
         

@@ -177,7 +177,9 @@ print(f"Promedio de notas: {promedio_notas}")
 # • Permitir que dos jugadores ingresen posiciones (fila, columna) para colocar "X" o "O".
 # • Mostrar el tablero después de cada jugada
 
+
 tablero = [[" - " for _ in range(3)] for _ in range(3)]
+
 
 jugador = "X"
 jugadas = 0
@@ -240,3 +242,72 @@ while True:
         jugador = "O"
     else:
         jugador = "X"
+
+# 10) Una tienda registra las ventas de 4 productos durante 7 días, en una matriz de 4x7.
+# • Mostrar el total vendido por cada producto.
+# • Mostrar el día con mayores ventas totales.
+# • Indicar cuál fue el producto más vendido en la semana.
+
+productos = ["producto_1", "producto_2", "producto_3", "producto_4"]
+precios = [1250.50, 980.00, 850.75, 1500.00]
+
+print("--- Carga de Ventas de la Semana ---")
+ventas = [] 
+
+for i in range(len(productos)):
+    ventas_producto = [] 
+    print(f"\n--- Cargando ventas para '{productos[i]}' ---")
+    
+    for j in range(7):
+        while True:
+            venta_entrada = input(f"  - Cantidad vendida el Día {j + 1}: ")
+            if venta_entrada.isdigit():
+                ventas_producto.append(int(venta_entrada))
+                break
+            else:
+                print("  Error: Por favor, ingrese un número entero válido.")
+    
+    ventas.append(ventas_producto)
+
+print("\n--- Matriz de Cantidades Vendidas (Producto x Día) ---")
+for i in range(len(productos)):
+    print(f"{productos[i]:<8}: {ventas[i]}")
+print("-" * 50)
+
+print("\n--- Ingreso Total por Producto (en Pesos) ---")
+total_unidades_por_producto = []
+total_ingresos_por_producto = []
+
+for i in range(len(productos)):
+    unidades_vendidas = sum(ventas[i])
+    ingreso_producto = unidades_vendidas * precios[i]
+    
+    total_unidades_por_producto.append(unidades_vendidas)
+    total_ingresos_por_producto.append(ingreso_producto)
+    
+    print(f"Producto '{productos[i]}': Ingreso total de ${ingreso_producto:.2f}")
+
+ingreso_maximo = max(total_ingresos_por_producto)
+producto_mas_rentable = total_ingresos_por_producto.index(ingreso_maximo)
+print(f"\n-> El producto con mayor ingreso fue '{productos[producto_mas_rentable]}' con ${ingreso_maximo:.2f}")
+
+unidades_maximas = max(total_unidades_por_producto)
+producto_mas_vendido = total_unidades_por_producto.index(unidades_maximas)
+print(f"-> El producto más vendido fue '{productos[producto_mas_vendido]}' con {unidades_maximas} unidades.")
+print("-" * 50)
+
+print("\n--- Día con Mayores Ingresos Totales ---")
+ingresos_por_dia = []
+for i in range(7):
+    ingreso_del_dia = 0
+    for j in range(len(productos)):
+        cantidad = ventas[j][i]
+        precio = precios[j]
+        ingreso_del_dia += cantidad * precio
+    ingresos_por_dia.append(ingreso_del_dia)
+
+ingreso_maximo_dia = max(ingresos_por_dia)
+dia_max_ingreso = ingresos_por_dia.index(ingreso_maximo_dia)
+
+print(f"-> El día con mayores ingresos fue el Día {dia_max_ingreso + 1} con un total de ${ingreso_maximo_dia:.2f}")
+print("-" * 50)
