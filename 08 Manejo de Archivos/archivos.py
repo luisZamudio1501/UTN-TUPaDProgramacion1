@@ -1,196 +1,221 @@
-# 1) Dado el diccionario precios_frutas
-#precios_frutas = {'Banana': 1200, 'Ananá': 2500, 'Melón': 3000, 'Uva':
-#1450}
-#Añadir las siguientes frutas con sus respectivos precios:
-#● Naranja = 1200
-#● Manzana = 1500
-#● Pera = 2300
+# 1. Crear archivo inicial con productos: Crear un archivo de texto llamado
+#productos.txt con tres productos. Cada línea debe tener: nombre,precio,cantidad
 
-precios_frutas = {'Banana': 1200, 'Ananá': 2500, 'Melón': 3000, 'Uva': 1450}
+NOMBRE_ARCHIVO = "productos.txt"
 
-precios_frutas['Naranja'] = 1200
-precios_frutas['Manzana'] = 1500
-precios_frutas['Pera'] = 2300
+lineas = [
+    "Lapicera,120.5,30\n",
+    "Cuaderno,850.0,12\n",
+    "Regla,300.0,20\n",
+]
 
-print(precios_frutas)
+with open(NOMBRE_ARCHIVO, "w", encoding="utf-8") as f:
+    f.writelines(lineas)
+
+print("Archivo creado con 3 productos")    
 
 
-# 2) Siguiendo con el diccionario precios_frutas que resulta luego de ejecutar el código
-#desarrollado en el punto anterior, actualizar los precios de las siguientes frutas:
-#● Banana = 1330
-#● Manzana = 1700
-#● Melón = 2800
+# 2. Leer y mostrar productos: Crear un programa que abra productos.txt, lea cada
+#línea, la procese con .strip() y .split(","), y muestre los productos en el siguiente
+#formato:
+#Producto: Lapicera | Precio: $120.5 | Cantidad: 30
 
-precios_frutas['Banana'] = 1330
-precios_frutas['Manzana'] = 1700
-precios_frutas['Melón'] = 2800
+NOMBRE_ARCHIVO = "productos.txt"
 
-print(precios_frutas)
+with open(NOMBRE_ARCHIVO, "r", encoding="utf-8") as f:
+    for linea in f:
+        partes = linea.strip().split(",")
+        if len(partes) != 3:
+            continue
+        nombre, precio, cantidad = partes
+        print(f"Producto: {nombre} | Precio: ${precio} | Cantidad: {cantidad}")
 
-# 3) Siguiendo con el diccionario precios_frutas que resulta luego de ejecutar el código
-#desarrollado en el punto anterior, crear una lista que contenga únicamente las frutas sin los
-#precios.
 
-precios_frutas['Banana'] = 1330
-precios_frutas['Manzana'] = 1700
-precios_frutas['Melón'] = 2800
 
-print(precios_frutas)
+# 3. Agregar productos desde teclado: Modificar el programa para que luego de mostrar
+#los productos, le pida al usuario que ingrese un nuevo producto (nombre, precio,
+#cantidad) y lo agregue al archivo sin borrar el contenido existente.
 
-# 4) Escribí un programa que permita almacenar y consultar números telefónicos.
-#• Permití al usuario cargar 5 contactos con su nombre como clave y número como valor.
-#• Luego, pedí un nombre y mostrale el número asociado, si existe.
+NOMBRE_ARCHIVO = "productos.txt"
 
-agenda = {}
+def pedir_entero_no_negativo(msg: str) -> int:
+    while True:
+        dato = input(msg).strip()
+        if dato.isdigit():
+            return int(dato)
+        print("Ingrese un entero no negativo")
 
-for i in range(5):
-    nombre = input(f"Ingrese nombre del contacto #{i+1}: ").strip()
-    numero = input(f"Ingrese número de {nombre}: ").strip()
-    agenda[nombre] = numero
+def pedir_flotante_no_negativo(msg: str) -> float:
+    while True:
+        dato = input(msg).strip().replace(",", ".")
+        try:
+            val = float(dato)
+            if val >= 0:
+                return val
+        except ValueError:
+            pass
+        print("Ingrese un número real no negativo")
 
-consulta = input("Ingrese un nombre para consultar su número: ").strip()
-if consulta in agenda:
-    print(f"Número de {consulta}: {agenda[consulta]}")
+nombre = input("Nombre del producto: ").strip()
+precio = pedir_flotante_no_negativo("Precio: $")
+cantidad = pedir_entero_no_negativo("Cantidad: ")
+
+with open(NOMBRE_ARCHIVO, "a", encoding="utf-8") as f:
+    f.write(f"{nombre},{precio},{cantidad}\n")
+
+print("Producto agregado sin borrar el archivo")
+
+
+
+# 4. Cargar productos en una lista de diccionarios: Al leer el archivo, cargar los datos en
+#una lista llamada productos, donde cada elemento sea un diccionario con claves:
+#nombre, precio, cantidad.
+
+from typing import List, Dict
+
+NOMBRE_ARCHIVO = "productos.txt"
+
+productos: List[Dict[str, object]] = []
+
+with open(NOMBRE_ARCHIVO, "r", encoding="utf-8") as f:
+    for linea in f:
+        partes = linea.strip().split(",")
+        if len(partes) != 3:
+            continue
+        nombre, precio_str, cant_str = partes
+        try:
+            precio = float(precio_str)
+            cantidad = int(cant_str)
+        except ValueError:
+            continue
+        productos.append({"nombre": nombre, "precio": precio, "cantidad": cantidad})
+
+print("Productos cargados en memoria:")
+for p in productos:
+    print(p)
+
+
+
+# 5. Buscar producto por nombre: Pedir al usuario que ingrese el nombre de un
+#producto. Recorrer la lista de productos y, si lo encuentra, mostrar todos sus datos. Si
+#no existe, mostrar un mensaje de error.
+
+from typing import List, Dict
+
+NOMBRE_ARCHIVO = "productos.txt"
+
+def cargar_productos() -> List[Dict[str, object]]:
+    productos = []
+    with open(NOMBRE_ARCHIVO, "r", encoding="utf-8") as f:
+        for linea in f:
+            partes = linea.strip().split(",")
+            if len(partes) != 3:
+                continue
+            nombre, precio_str, cant_str = partes
+            try:
+                precio = float(precio_str)
+                cantidad = int(cant_str)
+            except ValueError:
+                continue
+            productos.append({"nombre": nombre, "precio": precio, "cantidad": cantidad})
+    return productos
+
+def normalizar_nombre(n: str) -> str:
+    return " ".join(n.strip().split())
+
+productos = cargar_productos()
+objetivo = normalizar_nombre(input("Busque un producto por nombre: ")).lower()
+
+encontrado = None
+for p in productos:
+    if p["nombre"].lower() == objetivo:
+        encontrado = p
+        break
+
+if encontrado:
+    print(f"Nombre: {encontrado['nombre']} | Precio: ${encontrado['precio']} | Cantidad: {encontrado['cantidad']}")
 else:
-    print("No hay un contacto con ese nombre.")
-
-# 5) Solicita al usuario una frase e imprime:
-#• Las palabras únicas (usando un set).
-#• Un diccionario con la cantidad de veces que aparece cada palabra
-
-frase = input("Ingrese una frase: ").lower()
-
-for signo in ".,;:!¿?¡()\"'":
-    frase = frase.replace(signo, "")
-
-palabras = frase.split()
-
-unicas = set(palabras)
-print("Palabras únicas:", unicas)
-
-conteo = {p: palabras.count(p) for p in unicas}
-print("Frecuencia de palabras:", conteo)
+    print("No existe un producto con ese nombre")
 
 
 
-# 6) Permití ingresar los nombres de 3 alumnos, y para cada uno una tupla de 3 notas.
-#Luego, mostrá el promedio de cada alumno.
+# 6. Guardar los productos actualizados: Después de haber leído, buscado o agregado
+#productos, sobrescribir el archivo productos.txt escribiendo nuevamente todos los
+#productos actualizados desde la lista.
 
-alumnos = {}
+from typing import List, Dict
 
-for i in range(3):
-    nombre = input(f"Nombre del alumno #{i+1}: ").strip()
-    n1 = float(input("Nota 1: "))
-    n2 = float(input("Nota 2: "))
-    n3 = float(input("Nota 3: "))
-    alumnos[nombre] = (n1, n2, n3)
+NOMBRE_ARCHIVO = "productos.txt"
 
-for nombre, notas in alumnos.items():
-    prom = sum(notas) / len(notas)
-    print(f"{nombre}: promedio = {prom:.2f}")
+def cargar_productos() -> List[Dict[str, object]]:
+    productos = []
+    with open(NOMBRE_ARCHIVO, "r", encoding="utf-8") as f:
+        for linea in f:
+            partes = linea.strip().split(",")
+            if len(partes) != 3:
+                continue
+            nombre, precio_str, cant_str = partes
+            try:
+                precio = float(precio_str)
+                cantidad = int(cant_str)
+            except ValueError:
+                continue
+            productos.append({"nombre": nombre, "precio": precio, "cantidad": cantidad})
+    return productos
 
+def guardar_productos(productos: List[Dict[str, object]]):
+    with open(NOMBRE_ARCHIVO, "w", encoding="utf-8") as f:
+        for p in productos:
+            f.write(f"{p['nombre']},{p['precio']},{p['cantidad']}\n")
+    print("Archivo sobrescrito con los productos actualizados")
 
-# 7) Dado dos sets de números, representando dos listas de estudiantes que aprobaron Parcial 1
-# y Parcial 2:
-#• Mostrá los que aprobaron ambos parciales.
-#• Mostrá los que aprobaron solo uno de los dos.
-#• Mostrá la lista total de estudiantes que aprobaron al menos un parcial (sin repetir).
+def pedir_flotante_no_negativo(msg: str) -> float:
+    while True:
+        dato = input(msg).strip().replace(",", ".")
+        try:
+            val = float(dato)
+            if val >= 0:
+                return val
+        except ValueError:
+            pass
+        print("Ingrese un número real no negativo")
 
-aprobados_p1 = {a0, a1, a2, a3, a4}
-aprobados_p2 = {a5, a6, a7, a8, a9}
+def pedir_entero_no_negativo(msg: str) -> int:
+    while True:
+        dato = input(msg).strip()
+        if dato.isdigit():
+            return int(dato)
+        print("Ingrese un entero no negativo")
 
-ambos = aprobados_p1 & aprobados_p2
-solo_uno = (aprobados_p1 ^ aprobados_p2)
-al_menos_uno = aprobados_p1 | aprobados_p2
+def normalizar_nombre(n: str) -> str:
+    return " ".join(n.strip().split())
 
-print("Aprobaron ambos:", ambos)
-print("Aprobaron solo uno:", solo_uno)
-print("Aprobaron al menos un parcial:", al_menos_uno)
-
-
-# 8) Armá un diccionario donde las claves sean nombres de productos y los valores su stock.
-#Permití al usuario:
-#• Consultar el stock de un producto ingresado.
-#• Agregar unidades al stock si el producto ya existe.
-#• Agregar un nuevo producto si no existe.
-
-stock = {}
+productos = cargar_productos()
 
 while True:
-    producto = input("Ingrese producto (o 'salir'): ").strip().lower()
-    if producto == "salir":
+    nombre_obj = normalizar_nombre(input("Producto a actualizar (Enter para terminar): "))
+    if nombre_obj == "":
         break
 
-    if producto not in stock:
-        stock[producto] = 0
-        print(f"Producto '{producto}' agregado con stock inicial 0.")
+    idx = None
+    for i, p in enumerate(productos):
+        if p["nombre"].lower() == nombre_obj.lower():
+            idx = i
+            break
 
-    print(f"Stock actual de {producto}: {stock[producto]}")
+    if idx is None:
+        print("No se encontró ese producto")
+        continue
 
-    agregar = input("¿Desea agregar unidades? (s/n): ").strip().lower()
-    if agregar == "s":
-        cantidad = input("Ingrese cantidad a agregar: ").strip()
-        if cantidad.isdigit():
-            stock[producto] += int(cantidad)
-            print(f"Nuevo stock de {producto}: {stock[producto]}")
-        else:
-            print("Debe ingresar un número válido.")
+    actual = productos[idx]
+    op = input("¿Qué quiere actualizar? (p=precio, c=cantidad, ambos=pc): ").strip().lower()
 
-print("\nStock final:", stock)
+    if op in ("p", "pc"):
+        actual["precio"] = pedir_flotante_no_negativo(f"Nuevo precio (actual {actual['precio']}): $")
+    if op in ("c", "pc"):
+        actual["cantidad"] = pedir_entero_no_negativo(f"Nueva cantidad (actual {actual['cantidad']}): ")
 
+    print("Actualizado\n")
 
-# 9) Creá una agenda donde las claves sean tuplas de (día, hora) y los valores sean eventos.
-#Permití consultar qué actividad hay en cierto día y hora.
-
-agenda = {}
-
-while True:
-    accion = input("¿Desea (a)gregar, (c)onsultar o (s)alir?: ").strip().lower()
-    if accion == 's':
-        break
-    elif accion == 'a':
-        dia = input("Día (ej: 'Lunes'): ").strip()
-        hora = input("Hora (ej: '10:00'): ").strip()
-        evento = input("Evento: ").strip()
-        agenda[(dia, hora)] = evento
-        print("Evento guardado.")
-    elif accion == 'c':
-        dia = input("Día a consultar: ").strip()
-        hora = input("Hora a consultar: ").strip()
-        evento = agenda.get((dia, hora))
-        if evento:
-            print(f"En {dia} a las {hora}: {evento}")
-        else:
-            print("No hay actividad registrada en ese día y hora.")
-    else:
-        print("Opción inválida.")
-
-print("Agenda completa:", agenda)
-
-
-# 10) Dado un diccionario que mapea nombres de países con sus capitales, construí un nuevo
-#diccionario donde:
-#• Las capitales sean las claves.
-#• Los países sean los valores.
-
-paises_capitales = {
-    "Argentina": "Buenos Aires",
-    "Brasil": "Brasilia",
-    "Chile": "Santiago",
-    "Uruguay": "Montevideo",
-}
-
-capitales_pais = {}
-for pais, capital in paises_capitales.items():
-    capitales_pais[capital] = pais
-
-print(capitales_pais)
-
-
-
-
-
-
-
-
+guardar_productos(productos)
 
